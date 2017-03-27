@@ -34,10 +34,12 @@ class PostmarkServiceProvider extends \Illuminate\Mail\MailServiceProvider
     {
         $postmark = $this->app['config']->get('services.postmark', []);
 
-        $this->app['swift.mailer'] = $this->app->share(function ($app) use ($postmark) {
-            return new Swift_Mailer(
-                new Swift_PostmarkTransport($postmark['api_key'])
-            );
+        // Make laravel 5.4 compatible
+        
+        $this->app['swift.mailer'] = $this->app->singleton('swift.mailer', function ($app) use ($postmark) {
+			return new Swift_Mailer(
+				new Swift_PostmarkTransport($postmark['api_key'])
+			);
         });
     }
 }
